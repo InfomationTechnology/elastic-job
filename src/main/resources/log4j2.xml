@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+    <!-- 定义如下几个引用名，用于后面配置文件中使用 -->
+    <Properties>
+        <property name="log_pattern">[elastic-job][%d{yyyy-MM-dd HH:mm:ss.SSS}][ %-5p ][%t]%m%n
+        </property><!-- 日志输出格式 -->
+        <property name="log-path">/home/app/logs</property><!-- ${web:rootDir}是项目根目录 -->
+        <property name="every_file_size">10M</property><!-- 日志切割的最小单位 -->
+        <property name="output_log_level">info</property><!-- 日志输出级别 -->
+    </Properties>
+
+    <!--先定义所有的appender -->
+    <appenders >
+        <!--这个输出控制台的配置 -->
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <!-- ThresholdFilter: 用于定义过滤机制 -->
+            <!-- level: 日志过滤级别 -->
+            <!-- onMatch="ACCEPT"：保留level 及以上级别的日志 -->
+            <!-- onMismatch="DENY"：丢掉level 以下级别的日志-->
+            <!-- onMatch 和 onMissmatch 可选值为：ACCEPT DENY NEUTRAL-->
+            <ThresholdFilter level="trace" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!--这个都知道是输出日志的格式 -->
+            <PatternLayout pattern="${log_pattern}"/>
+        </Console>
+
+        <!-- debug级别日志文件 -->
+        <!-- RollingFile：日志滚动输出 -->
+        <!--每次大小超过size，则这size大小的日志会自动进行压缩，作为存档 -->
+        <RollingFile name="DEBUG" fileName="${log-path}/elastic-job/debug/debug.log"
+                     filePattern="${log-path}/elastic-job/bak/debug/debug-%d{yyyy-MM-dd}-%i.log.gz" >
+            <!--<Filters>
+                <ThresholdFilter level="info" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+            </Filters>-->
+            <PatternLayout pattern="${log_pattern}"/>
+            <!-- SizeBasedTriggeringPolicy: 基于日志大小切分日志 -->
+            <SizeBasedTriggeringPolicy size="${every_file_size}"/>
+        </RollingFile>
+
+        <!-- info级别日志文件 -->
+        <!--文件会打印出所有信息，这个log每次运行程序会自动清空，由append属性决定，这个也挺有用的，适合临时测试用 -->
+        <!--append为TRUE表示消息增加到指定文件中，false表示消息覆盖指定的文件内容，默认值是true -->
+        <RollingFile name="INFO" fileName="${log-path}/elastic-job/info/info.log"
+                     filePattern="${log-path}/elastic-job/bak/info/info-%d{yyyy-MM-dd}-%i.log.gz">
+            <Filters>
+                <ThresholdFilter level="warn" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="${log_pattern}"/>
+            <SizeBasedTriggeringPolicy size="${every_file_size}"/>
+        </RollingFile>
+
+        <!-- error级别日志文件 -->
+        <RollingFile name="ERROR" fileName="${log-path}/elastic-job/error/error.log"
+                     filePattern="${log-path}/elastic-job/bak/error/error-%d{yyyy-MM-dd}-%i.log.gz">
+            <Filters>
+                <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="${log_pattern}"/>
+            <SizeBasedTriggeringPolicy size="${every_file_size}"/>
+        </RollingFile>
+    </appenders>
+
+    <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效 -->
+    <loggers>
+
+        <!--此处为异步和非异步混合输出模式，本Log4j2Util,采用完全异步：System.setProperty("Log4jContextSelector", "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");-->
+        <!--<AsyncLogger  name="asyncAppender" includeLocation="true" >
+            <AppenderRef ref="CONSOLE"/>
+            <AppenderRef ref="DEBUG"/>
+            <AppenderRef ref="INFO"/>
+            <AppenderRef ref="ERROR"/>
+        </AsyncLogger >-->
+
+        <!--建立一个默认的root的logger，需要在root的level中指定输出的级别， -->
+        <!-- trace < debug < info < warn < error < fatal -->
+        <root level="${output_log_level}">
+            <appender-ref ref="CONSOLE"/><!--显示所有的日志-->
+            <appender-ref ref="DEBUG"/> <!--记录所有的日志-->
+            <appender-ref ref="INFO"/><!--仅记录info级别的日志-->
+            <appender-ref ref="ERROR"/><!--仅记录error级别的日志-->
+        </root>
+
+    </loggers>
+</configuration>

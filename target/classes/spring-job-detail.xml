@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:job="http://www.dangdang.com/schema/ddframe/job"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.dangdang.com/schema/ddframe/job
+       classpath:/META-INF/namespace/job.xsd"
+>
+    <!--classpath:/META-INF/namespace/job.xsd" 是自己配置的-->
+
+    <!-- 配置作业 -->
+    <!--<job:simple id="myElasticJob" job-ref="myElasticJob" registry-center-ref="regCenter" cron="0/30 * * * * ?" sharding-total-count="1" description="30秒运行一次"/>
+    <job:simple id="elasticJob2" job-ref="elasticJob2" registry-center-ref="regCenter" cron="0/20 * * * * ?" sharding-total-count="1" description="100次循环"/>-->
+
+    <!--DEMO--><!--   event-trace-rdb-data-source="elasticJobLog" -->
+    <job:simple id="demoJob" job-ref="demoJob" cron="*/2 * * * * ?"/>
+    <job:simple id="elasticJob2" job-ref="elasticJob2" cron="30 * * * * ?"/>
+
+</beans>

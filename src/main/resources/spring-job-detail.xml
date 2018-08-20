@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:job="http://www.dangdang.com/schema/ddframe/job"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.dangdang.com/schema/ddframe/job
+       classpath:/META-INF/namespace/job.xsd"
+>
+    <!--classpath:/META-INF/namespace/job.xsd" 是自己配置的-->
+
+    <!-- 配置作业 -->
+    <!--DEMO--><!--   event-trace-rdb-data-source="elasticJobLog" -->
+    <job:simple id="demoJob" job-ref="demoJob" cron="*/2 * * * * ?"/>
+    <job:simple id="elasticJob2" job-ref="elasticJob2" cron="30 * * * * ?"/>
+
+    <!-- 参考资料
+    https://github.com/elasticjob  github
+    https://blog.csdn.net/a158123/article/details/78323728 elastic-job监控平台搭建
+    https://gitee.com/elasticjob/elastic-job 码云
+    http://elasticjob.io/index_zh.html elasticjob官网
+    https://blog.csdn.net/zhglance/article/details/55213466 elasticjob入门案例
+
+    -->
+
+
+</beans>
